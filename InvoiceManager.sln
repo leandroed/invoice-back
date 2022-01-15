@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvoiceApi", "InvoiceApi\In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvoiceApi.Tests", "InvoiceApi.Tests\InvoiceApi.Tests.csproj", "{1BB129A8-FA0B-40F5-9EEB-50D84F462154}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DbLib", "DbLib\DbLib.csproj", "{A28576A4-BA11-46C9-AA26-1AFA9921F9BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{1BB129A8-FA0B-40F5-9EEB-50D84F462154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1BB129A8-FA0B-40F5-9EEB-50D84F462154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1BB129A8-FA0B-40F5-9EEB-50D84F462154}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A28576A4-BA11-46C9-AA26-1AFA9921F9BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A28576A4-BA11-46C9-AA26-1AFA9921F9BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A28576A4-BA11-46C9-AA26-1AFA9921F9BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A28576A4-BA11-46C9-AA26-1AFA9921F9BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
