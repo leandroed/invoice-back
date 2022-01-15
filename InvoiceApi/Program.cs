@@ -1,4 +1,15 @@
+using InvoiceApi;
 using Microsoft.OpenApi.Models;
+using Serilog;
+
+LoggerConfig.InitializeLogger();
+DatabaseConfig dbConfig = new DatabaseConfig();
+
+if (!dbConfig.StartConnection())
+{
+    Log.Error("Error it was not possible connect with database.");
+    return;
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
