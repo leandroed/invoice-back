@@ -1,9 +1,13 @@
 using System;
+using InvoiceApi.Protocols;
 using NSubstitute;
 using Xunit;
 
 namespace InvoiceApi.Tests;
 
+/// <summary>
+/// Database config test class.
+/// </summary>
 public class DatabaseConfigTest
 {
     private string secretStringMock = "{\"username\":\"anyUser\",\"password\":\"anyPassword\",\"engine\":\"sqlserver\",\"host\":\"anyHost\",\"port\":\"1\",\"dbname\":\"anyName\"}";
@@ -19,7 +23,7 @@ public class DatabaseConfigTest
         ISecretManager secretManager = Substitute.For<ISecretManager>();
         secretManager.Get().Returns(string.Empty);
 
-        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager);
+        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager, true);
         bool result = databaseConfig.StartConnection();
         Assert.False(result);
     }
@@ -33,7 +37,7 @@ public class DatabaseConfigTest
         ISecretManager secretManager = Substitute.For<ISecretManager>();
         secretManager.Get().Returns(this.secretStringInvalidEngineMock);
 
-        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager);
+        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager, true);
         bool result = databaseConfig.StartConnection();
         Assert.False(result);
     }
@@ -47,7 +51,7 @@ public class DatabaseConfigTest
         ISecretManager secretManager = Substitute.For<ISecretManager>();
         secretManager.Get().Returns(x => throw new Exception());
 
-        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager);
+        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager, true);
         bool result = databaseConfig.StartConnection();
         Assert.False(result);
     }
@@ -61,7 +65,7 @@ public class DatabaseConfigTest
         ISecretManager secretManager = Substitute.For<ISecretManager>();
         secretManager.Get().Returns(this.secretStringMock);
 
-        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager);
+        DatabaseConfig databaseConfig = new DatabaseConfig(secretManager, true);
         bool result = databaseConfig.StartConnection();
         Assert.True(result);
     }

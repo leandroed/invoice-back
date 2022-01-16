@@ -1,9 +1,13 @@
 using InvoiceApi;
+using InvoiceApi.Services;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
+var builder = WebApplication.CreateBuilder(args);
+
 LoggerConfig.InitializeLogger();
-DatabaseConfig dbConfig = new DatabaseConfig();
+bool.TryParse(builder.Configuration["CloudEnv"], out bool isCloudEnv);
+DatabaseConfig dbConfig = new DatabaseConfig(isCloudEnv);
 
 if (!dbConfig.StartConnection())
 {
@@ -11,13 +15,12 @@ if (!dbConfig.StartConnection())
     return;
 }
 
-var builder = WebApplication.CreateBuilder(args);
-
 // Add services to the container.
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -29,24 +32,23 @@ builder.Services.AddSwaggerGen(options =>
         Contact = new OpenApiContact
         {
             Name = "Example Contact",
-            Url = new Uri("https://example.com/contact")
+            Url = new Uri("https://example.com/contact"),
         },
         License = new OpenApiLicense
         {
             Name = "Example License",
-            Url = new Uri("https://example.com/license")
-        }
+            Url = new Uri("https://example.com/license"),
+        },
     });
 });
+
+builder.Services.AddScoped<InvoiceExternalData>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

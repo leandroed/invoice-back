@@ -1,6 +1,7 @@
 using Amazon;
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
+using InvoiceApi.Protocols;
 using Serilog;
 
 namespace InvoiceApi.Vendor;
@@ -45,6 +46,7 @@ public class AwsSecretManager : ISecretManager
 
         if (string.IsNullOrEmpty(secretName))
         {
+            Log.Information("The secret in environment is empty.");
             return secret;
         }
 

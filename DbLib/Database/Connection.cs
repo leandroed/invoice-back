@@ -42,6 +42,10 @@ public static class Connection
         {
             return connection.PrefixParam;
         }
+        set
+        {
+            connection.PrefixParam = value;
+        }
     }
 
     /// <summary>
