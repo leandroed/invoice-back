@@ -8,6 +8,7 @@ An api to get invoices and manipulate them
 - IDE of your choice
 - (optional) Docker
 - SQLServer database
+- Run script in database located in scripts directory
 
 - You should set the following environment variables, the first is for your database connection and the second is for the url to get the invoices:
 

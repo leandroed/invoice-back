@@ -1,5 +1,7 @@
 using System.Dynamic;
+using DbLib.Database;
 using InvoiceApi.Data;
+using InvoiceApi.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
@@ -50,7 +52,59 @@ public class InvoiceExternalData
             return false;
         }
 
+        string jsonUpdatedInvoices = JsonConvert.SerializeObject(updatedInvoices);
+        List<InvoiceContent> listInvoicesContent = JsonConvert.DeserializeObject<List<InvoiceContent>>(jsonUpdatedInvoices);
+
+        this.InsertProductsAndSales(listInvoicesContent);
+
         return true;
+    }
+
+    /// <summary>
+    /// Insert products and sales of the invoices.
+    /// </summary>
+    /// <param name="listInvoicesContent">List with invoices content.</param>
+    public void InsertProductsAndSales(List<InvoiceContent> listInvoicesContent)
+    {
+        IConnectionCommandsFactory connFactory = new ConnectionCommandsFactory();
+        using IConnectionCommands connCommands = connFactory.Create();
+        bool productsSuccess = true;
+        bool salesSuccess = true;
+        Log.Debug("Begin transaction.");
+        connCommands.BeginTransaction();
+
+        ProductRepository productRepository = new ProductRepository(connCommands);
+        SalesRepository salesRepository = new SalesRepository(connCommands);
+
+        foreach (InvoiceContent invoiceContent in listInvoicesContent)
+        {
+            productsSuccess &= productRepository.Insert(invoiceContent);
+            if (!productsSuccess)
+            {
+                Log.Error("Error when trying to insert a product.");
+                break;
+            }
+
+            salesSuccess &= salesRepository.Insert(invoiceContent);
+            if (!salesSuccess)
+            {
+                Log.Error("Error when trying to insert a sale.");
+                break;
+            }
+        }
+
+        if (productsSuccess && salesSuccess)
+        {
+            Log.Debug("Commit transaction.");
+            connCommands.CommitTransaction();
+        }
+        else
+        {
+            Log.Debug("Rollback transaction.");
+            connCommands.RollbackTransaction();
+        }
+
+        connCommands.DisposeTransaction();
     }
 
     /// <summary>
@@ -60,6 +114,9 @@ public class InvoiceExternalData
     /// <returns>Altered list with invoices.</returns>
     public JArray EvaluateTax(JArray invoices)
     {
+        System.Globalization.CultureInfo customCulture = (System.Globalization.CultureInfo)System.Threading.Thread.CurrentThread.CurrentCulture.Clone();
+        customCulture.NumberFormat.NumberDecimalSeparator = ".";
+        System.Threading.Thread.CurrentThread.CurrentCulture = customCulture;
         decimal tax = 0.15m;
         JArray result = new JArray();
 
