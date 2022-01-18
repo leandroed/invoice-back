@@ -2,6 +2,9 @@
 <div align="center">
 An api to get invoices and manipulate them
 </div>
+<div align="center">
+<a href='https://coveralls.io/github/leandroed/invoice-back?branch='><img src='https://coveralls.io/repos/github/leandroed/invoice-back/badge.svg?branch=' alt='Coverage Status' /></a>
+</div>
 
 ## 📋 Requirements:
 - .net 6.0
