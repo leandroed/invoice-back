@@ -1,4 +1,5 @@
 using System.Data;
+using System.Data.Common;
 using DbLib.Database;
 using InvoiceApi.Models;
 using Serilog;
@@ -79,5 +80,40 @@ public class ProductRepository
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Get brand list.
+    /// </summary>
+    public List<string> GetBrands()
+    {
+        List<string> brands = new List<string>();
+
+        try
+        {
+            string query = "SELECT DISTINCT BRAND FROM PRODUCTS";
+            DbDataReader reader = this.connCommands.ExecuteReader(query);
+
+            if (reader == null)
+            {
+                Log.Information("A null data reader received when getting the brands.");
+                return brands;
+            }
+
+            while (reader.Read())
+            {
+                brands.Add(reader.GetString(0));
+            }
+
+            reader.DisposeAsync();
+            reader.Close();
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"Error fault when getting the brands in database. {ex.Message}");
+            return new List<string>();
+        }
+
+        return brands;
     }
 }

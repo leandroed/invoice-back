@@ -1,4 +1,5 @@
 using InvoiceApi;
+using InvoiceApi.Data;
 using InvoiceApi.Services;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -43,6 +44,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<InvoiceExternalData>();
+builder.Services.AddScoped<SalesRepository>();
+builder.Services.AddScoped<ProductRepository>();
 
 var app = builder.Build();
 

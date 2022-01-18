@@ -22,7 +22,7 @@ public class InvoiceRepositoryTest
     /// </summary>
     public InvoiceRepositoryTest()
     {
-        this.mockContent = JsonConvert.DeserializeObject<JArray>("[{\"id\": \"anyId\", \"nfeProc\": \"anyContent\"}]");
+        this.mockContent = JsonConvert.DeserializeObject<JArray>("[{\"id\": \"anyId\", \"nfeProc\": { \"NFe\": { \"infNFe\": { \"ide\": { \"dhEmi\": \"2021-11-29T03:41:58.841Z\" } } } } }]");
         Connection.LoadConnection("Data Source=host;Initial Catalog=mydb;Integrated Security=false;User ID=user;Password=pass;MultipleActiveResultSets=True;", EnumDatabase.Sqlserver);
         _ = Connection.Conn;
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using DbLib.Database;
 using DbLib.Enumerators;
 using InvoiceApi.Data;
@@ -82,5 +83,56 @@ public class ProductRepositoryTest
         bool result = prodRepository.Insert(this.invContentMock.InvoiceContentMock);
 
         Assert.True(result);
+    }
+
+    /// <summary>
+    /// Test select brands returns empty list when a null data reader is returned.
+    /// </summary>
+    [Fact]
+    public void TestSelectBrandRetursEmptyNullDataReader()
+    {
+        DbDataReader readerMock = null;
+        IConnectionCommands connCommMock = Substitute.For<IConnectionCommands>();
+        connCommMock.ExecuteReader(Arg.Any<string>()).Returns(readerMock);
+
+        ProductRepository prodRepository = new ProductRepository(connCommMock);
+        List<string> result = prodRepository.GetBrands();
+
+        Assert.True(result.Count == 0);
+    }
+
+    /// <summary>
+    /// Test select brands returns empty list when an exception occurs.
+    /// </summary>
+    [Fact]
+    public void TestSelectBrandRetursEmptyException()
+    {
+        IConnectionCommands connCommMock = Substitute.For<IConnectionCommands>();
+        connCommMock.ExecuteReader(Arg.Any<string>()).Returns(x => throw new Exception());
+
+        ProductRepository prodRepository = new ProductRepository(connCommMock);
+        List<string> result = prodRepository.GetBrands();
+
+        Assert.True(result.Count == 0);
+    }
+
+    /// <summary>
+    /// Test select brands returns brands on success.
+    /// </summary>
+    [Fact]
+    public void TestSelectBrandRetursBrandSuccess()
+    {
+        DbDataReader readerMock = Substitute.For<DbDataReader>();
+        readerMock.Read().Returns(true, true, false);
+        readerMock.GetString(0).Returns("Brand1", "Brand2");
+
+        IConnectionCommands connCommMock = Substitute.For<IConnectionCommands>();
+        connCommMock.ExecuteReader(Arg.Any<string>()).Returns(readerMock);
+
+        ProductRepository prodRepository = new ProductRepository(connCommMock);
+        List<string> result = prodRepository.GetBrands();
+
+        Assert.True(result.Count == 2);
+        Assert.True(result.Contains("Brand1"));
     }
 }

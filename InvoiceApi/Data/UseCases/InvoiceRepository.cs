@@ -55,12 +55,15 @@ public class InvoiceRepository
 
                 string id = item["id"].ToString();
                 string content = JsonConvert.SerializeObject(item["nfeProc"]);
+                string dhemiString = item["nfeProc"]["NFe"]["infNFe"]["ide"]["dhEmi"].ToString();
+                DateTimeOffset.TryParse(dhemiString, out DateTimeOffset dhemi);
 
-                string query = $"INSERT INTO INVOICES (ID, ORIGINALCONTENT) VALUES ({Connection.PrefixParam}id, {Connection.PrefixParam}content)";
+                string query = $"INSERT INTO INVOICES (ID, ORIGINALCONTENT, DHEMI) VALUES ({Connection.PrefixParam}id, {Connection.PrefixParam}content, {Connection.PrefixParam}dhemi)";
                 List<Parameters> parameters = new List<Parameters>
                 {
                     new Parameters { ParameterName = $"{Connection.PrefixParam}id", Value = id, DbType = DbType.String },
                     new Parameters { ParameterName = $"{Connection.PrefixParam}content", Value = content, DbType = DbType.String },
+                    new Parameters { ParameterName = $"{Connection.PrefixParam}dhemi", Value = dhemi, DbType = DbType.DateTimeOffset },
                 };
 
                 using IConnectionCommands connCommands = this.connFactory.Create();

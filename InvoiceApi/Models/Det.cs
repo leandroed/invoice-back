@@ -15,5 +15,5 @@ public class Det
     /// Gets or sets the product.
     /// </summary>
     /// <value>Product.</value>
-    public Prod Prod { get; set;}
+    public Prod Prod { get; set; }
 }
